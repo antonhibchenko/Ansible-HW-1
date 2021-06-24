@@ -21,8 +21,16 @@
 
     - name: Install packages
       yum:
-        name: ['mariadb-server', 'python2-PyMySQL']
+        name: ['mariadb-server']
         state: present
+      when: inventory_hostname in groups['db']
+
+    - name: Install the Python MySQL Support Libraries
+      yum: pkg=MySQL-python state=latest
+      when: inventory_hostname in groups['db']
+
+    - name: start mysql server and enable it on reboot
+      service: name=mariadb state=started enabled=true
       when: inventory_hostname in groups['db']
 
     - name: Run services
