@@ -1,0 +1,33 @@
+---
+- name: Configure Environment
+  hosts: all
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Install Apache2
+        yum: name=apache2 update_cache=yes state=latest
+        when: inventory_hostname in groups['app']
+
+    - name: Enable service httpd, and not touch the state
+      service:
+        name: httpd
+        enabled: yes
+        when: inventory_hostname in groups['app']
+
+    - name: Install packages
+        yum:
+          name: ['mariadb-server', 'python2-PyMySQL']
+          state: present
+          when: inventory_hostname in groups['db']
+    - name: Run services
+        service:
+          name: mariadb
+          state: started
+          enabled: yes
+
+    - name: Create a new database with name 'hillel'
+        mysql_db:
+          name: hillel
+          login_user: root
+          state: present
+          when: inventory_hostname in groups['db']
