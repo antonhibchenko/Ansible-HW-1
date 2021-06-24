@@ -4,6 +4,22 @@
   gather_facts: false
   become: true
   tasks:
+
+    - name: Create group Hillel
+      group:
+        name: hillel
+        state: present
+
+    - name: Create user Student
+      user:
+        name=student
+        group=hillel
+        shell=/bin/bash
+        password=student_pass
+        append=yes
+      become: yes
+      become_method: "sudo"
+
     - name: Ensure epel repo present
       yum:
         name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
@@ -40,9 +56,10 @@
         enabled: yes
       when: inventory_hostname in groups['db']
 
-    - name: Create a new database with name 'ansible_lesson_1'
-      mysql_db:
-        name: ansible_lesson_1
-        login_user: root
-        state: present
-      when: inventory_hostname in groups['db']
+
+        - name: Create a new database with name 'ansible_lesson_1'
+          mysql_db:
+            name: ansible_lesson_1
+            login_user: root
+            state: present
+          when: inventory_hostname in groups['db']
