@@ -25,9 +25,9 @@
           state: started
           enabled: yes
 
-    - name: Create a new database with name 'hillel'
+    - name: Create a new database with name 'ansible_lesson_1'
         mysql_db:
-          name: hillel
+          name: ansible_lesson_1
           login_user: root
           state: present
           when: inventory_hostname in groups['db']
