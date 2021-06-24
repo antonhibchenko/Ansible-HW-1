@@ -5,35 +5,36 @@
   become: true
   tasks:
     - name: Ensure epel repo present
-        yum:
-          name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-          state: present
-          when: inventory_hostname in groups['children']
+      yum:
+        name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+        state: present
 
     - name: Install Apache2
-        yum: name=apache2 update_cache=yes state=latest
-        when: inventory_hostname in groups['app']
+      yum: name=httpd update_cache=yes state=latest
+      when: inventory_hostname in groups['app']
 
     - name: Enable service httpd, and not touch the state
       service:
         name: httpd
         enabled: yes
-        when: inventory_hostname in groups['app']
+      when: inventory_hostname in groups['app']
 
     - name: Install packages
-        yum:
-          name: ['mariadb-server', 'python2-PyMySQL']
-          state: present
-          when: inventory_hostname in groups['db']
+      yum:
+        name: ['mariadb-server', 'python2-PyMySQL']
+        state: present
+      when: inventory_hostname in groups['db']
+
     - name: Run services
-        service:
-          name: mariadb
-          state: started
-          enabled: yes
+      service:
+        name: mariadb
+        state: started
+        enabled: yes
+      when: inventory_hostname in groups['db']
 
     - name: Create a new database with name 'ansible_lesson_1'
-        mysql_db:
-          name: ansible_lesson_1
-          login_user: root
-          state: present
-          when: inventory_hostname in groups['db']
+      mysql_db:
+        name: ansible_lesson_1
+        login_user: root
+        state: present
+      when: inventory_hostname in groups['db']
