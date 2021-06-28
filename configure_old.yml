@@ -56,7 +56,6 @@
         enabled: yes
       when: inventory_hostname in groups['db']
 
-
      - name: Create a new database with name 'ansible_lesson_1'
        mysql_db:
          name: ansible_lesson_1
